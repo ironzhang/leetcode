@@ -1,128 +1,141 @@
 package leetcode
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 )
 
 func isMatch(s string, p string) bool {
-	m, err := re2machine(p)
+	g, err := re2graph(p)
 	if err != nil {
 		panic(err)
 	}
-	return m.match(s)
+	return g.match(s)
 }
 
 type edge struct {
 	letter rune
-	state  *state
+	node   *node
 }
 
-type state struct {
+type node struct {
 	edges []edge
 }
 
-type machine struct {
-	start *state
-	end   *state
+func newNode() *node {
+	return &node{}
 }
 
-func re2machine(p string) (*machine, error) {
-	var m, nm *machine
-	m = newLetterMachine('*')
+func (p *node) addEdge(r rune, n *node) {
+	p.edges = append(p.edges, edge{letter: r, node: n})
+}
+
+type graph struct {
+	start, end *node
+}
+
+func newGraph(r rune) *graph {
+	s, e := newNode(), newNode()
+	s.addEdge(r, e)
+	return &graph{start: s, end: e}
+}
+
+func newStarGraph(r rune) *graph {
+	s, e, i, f := newNode(), newNode(), newNode(), newNode()
+	s.addEdge(r, e)
+	i.addEdge('*', s)
+	i.addEdge('*', f)
+	e.addEdge('*', s)
+	e.addEdge('*', f)
+	return &graph{start: i, end: f}
+}
+
+func (p *graph) merge(g *graph) {
+	p.end.addEdge('*', g.start)
+	p.end = g.end
+}
+
+func re2graph(p string) (*graph, error) {
+	g := newGraph('*')
 	for i := 0; i < len(p); i++ {
 		if c := rune(p[i]); (c >= 'a' && c <= 'z') || c == '.' {
 			if i+1 < len(p) && p[i+1] == '*' {
-				nm = newLetterStarMachine(c)
+				g.merge(newStarGraph(c))
 				i++
 			} else {
-				nm = newLetterMachine(c)
+				g.merge(newGraph(c))
 			}
 		} else {
 			return nil, errors.New("invalid pattern")
 		}
-		m = merge(m, nm)
 	}
-	return m, nil
+	return g, nil
 }
 
-func newLetterMachine(c rune) *machine {
-	start, end := &state{}, &state{}
-	start.edges = append(start.edges, edge{letter: c, state: end})
-	return &machine{start: start, end: end}
-}
+type nodes map[*node]bool
 
-func newLetterStarMachine(c rune) *machine {
-	m := newLetterMachine(c)
-	si, sf := &state{}, &state{}
-	si.edges = append(si.edges, edge{letter: '*', state: m.start})
-	si.edges = append(si.edges, edge{letter: '*', state: sf})
-	m.end.edges = append(m.end.edges, edge{letter: '*', state: m.start})
-	m.end.edges = append(m.end.edges, edge{letter: '*', state: sf})
-	return &machine{start: si, end: sf}
-}
-
-func merge(m1, m2 *machine) *machine {
-	if m1 == nil {
-		return m2
+func (p nodes) add(n *node) {
+	if !p[n] {
+		p[n] = true
+		for _, e := range n.edges {
+			if e.letter == '*' {
+				p.add(e.node)
+			}
+		}
 	}
-	m1.end.edges = append(m1.end.edges, edge{letter: '*', state: m2.start})
-	return &machine{start: m1.start, end: m2.end}
 }
 
-func (m *machine) match(s string) bool {
-	start, end := m.start, m.end
-	states := map[*state]bool{start: true}
+func move(olds nodes, r rune) (news nodes) {
+	news = make(nodes)
+	for n := range olds {
+		for _, e := range n.edges {
+			if e.letter == r || e.letter == '.' {
+				news.add(e.node)
+			}
+		}
+	}
+	return news
+}
 
-	states = eclosure(states)
+func (p *graph) match(s string) bool {
+	m := make(nodes)
+	m.add(p.start)
 	for _, c := range s {
-		states = eclosure(move(states, c))
+		m = move(m, c)
 	}
-	if states[end] {
+	if m[p.end] {
 		return true
 	}
 	return false
 }
 
-func eclosure(oldStates map[*state]bool) (newStates map[*state]bool) {
-	newStates = make(map[*state]bool)
-	for s := range oldStates {
-		add(newStates, s)
+func (p *graph) String() string {
+	var b bytes.Buffer
+	visited := make(map[*node]bool)
+	list := p.visit(nil, p.start, visited)
+
+	ids := make(map[*node]int)
+	for i, n := range list {
+		ids[n] = i
 	}
-	return newStates
+	for i, n := range list {
+		fmt.Fprintf(&b, "%d: ", i)
+		for _, e := range n.edges {
+			fmt.Fprintf(&b, "%c:%d, ", e.letter, ids[e.node])
+		}
+		fmt.Fprintln(&b)
+	}
+	return b.String()
 }
 
-func add(states map[*state]bool, s *state) {
-	if !states[s] {
-		states[s] = true
-		for _, e := range s.edges {
-			if e.letter == '*' {
-				add(states, e.state)
-			}
+func (p *graph) visit(list []*node, n *node, visited map[*node]bool) []*node {
+	if !visited[n] {
+		list = append(list, n)
+		visited[n] = true
+		for _, e := range n.edges {
+			list = p.visit(list, e.node, visited)
 		}
 	}
-}
-
-func move(oldStates map[*state]bool, c rune) (newStates map[*state]bool) {
-	newStates = make(map[*state]bool)
-	for s := range oldStates {
-		for _, e := range s.edges {
-			if (e.letter == c || e.letter == '.') && !newStates[e.state] {
-				newStates[e.state] = true
-			}
-		}
-	}
-	return newStates
-}
-
-func (m machine) String() string {
-	//	var b bytes.Buffer
-	//	for _, s := range m {
-	//		fmt.Fprintf(&b, "%d: ", s.id)
-	//		for _, e := range s.edges {
-	//			fmt.Fprintf(&b, "%c:%d, ", e.letter, e.state.id)
-	//		}
-	//		fmt.Fprintf(&b, "\n")
-	//	}
-	//	return b.String()
-	return ""
+	return list
 }

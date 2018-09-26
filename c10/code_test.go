@@ -1,6 +1,7 @@
 package leetcode
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -27,8 +28,20 @@ func TestIsMatch(t *testing.T) {
 	}
 	for i, tt := range tests {
 		if got, want := isMatch(tt.s, tt.p), tt.r; got != want {
-			m, _ := re2machine(tt.p)
-			t.Errorf("%d: isMatch(%q, %q): got=%v, want=%v, machine:\n%s", i, tt.s, tt.p, got, want, m.String())
+			g, _ := re2graph(tt.p)
+			t.Errorf("%d: isMatch(%q, %q): got=%v, want=%v, machine:\n%s", i, tt.s, tt.p, got, want, g.String())
 		}
+	}
+}
+
+func TestGraphString(t *testing.T) {
+	tests := []string{
+		"a",
+		"aa",
+		"c*c*",
+	}
+	for _, tt := range tests {
+		g, _ := re2graph(tt)
+		fmt.Printf("%s:\n%s", tt, g.String())
 	}
 }

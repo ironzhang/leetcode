@@ -1,6 +1,8 @@
 package leetcode
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestIsMatch(t *testing.T) {
 	tests := []struct {
@@ -8,6 +10,7 @@ func TestIsMatch(t *testing.T) {
 		p string
 		r bool
 	}{
+		{"a", "a", true},
 		{"aa", "a", false},
 		{"aa", "aa", true},
 		{"aaa", "aa", false},
@@ -15,10 +18,17 @@ func TestIsMatch(t *testing.T) {
 		{"aa", ".*", true},
 		{"ab", ".*", true},
 		{"aab", "c*a*b", true},
+		{"mississippi", "mis*is*ip*.", true},
+		{"aaa", "a*a", true},
+		{"aaba", "ab*a*c*a", false},
+		{"", "c*c*", true},
+		{"a", "", false},
+		{"", "", true},
 	}
-	for _, tt := range tests {
+	for i, tt := range tests {
 		if got, want := isMatch(tt.s, tt.p), tt.r; got != want {
-			t.Errorf("isMatch(%q, %q): got=%v, want=%v", tt.s, tt.p, got, want)
+			m, _ := re2machine(tt.p)
+			t.Errorf("%d: isMatch(%q, %q): got=%v, want=%v, machine:\n%s", i, tt.s, tt.p, got, want, m.String())
 		}
 	}
 }

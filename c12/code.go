@@ -33,7 +33,7 @@ var engine = map[int]string{
 	3000: "MMM",
 }
 
-func intToRoman(num int) string {
+func intToRoman0(num int) string {
 	s := ""
 	d := 1000
 	for d > 0 {
@@ -44,4 +44,13 @@ func intToRoman(num int) string {
 		d /= 10
 	}
 	return s
+}
+
+var I = [...]string{"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}
+var X = [...]string{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}
+var C = [...]string{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}
+var M = [...]string{"", "M", "MM", "MMM"}
+
+func intToRoman(num int) string {
+	return M[num/1000] + C[(num%1000)/100] + X[(num%100)/10] + I[num%10]
 }

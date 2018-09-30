@@ -1,6 +1,28 @@
 package leetcode
 
+var cache = map[int][]string{
+	0: []string{""},
+}
+
 func generateParenthesis(n int) []string {
+	if ans, ok := cache[n]; ok {
+		return ans
+	}
+
+	ans := make([]string, 0)
+	for i := 0; i < n; i++ {
+		for _, left := range generateParenthesis(i) {
+			for _, right := range generateParenthesis(n - i - 1) {
+				ans = append(ans, left+"("+right+")")
+			}
+		}
+	}
+	cache[n] = ans
+
+	return ans
+}
+
+func generateParenthesis1(n int) []string {
 	return backtrack(nil, "", 0, 0, n)
 }
 

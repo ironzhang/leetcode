@@ -25,10 +25,6 @@ func TestGenerateParenthesis(t *testing.T) {
 		s []string
 	}{
 		{
-			n: 0,
-			s: []string{},
-		},
-		{
 			n: 1,
 			s: []string{"()"},
 		},

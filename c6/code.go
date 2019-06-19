@@ -1,12 +1,34 @@
 package leetcode
 
-import "fmt"
-
 func convert(s string, numRows int) string {
-	n := 0
-	b := make([]rune, len(s))
-	for _, c := range s {
-		fmt.Printf("%c\n", c)
+	if numRows == 1 {
+		return s
 	}
-	return s
+
+	m := make([][]rune, numRows)
+
+	i := 0
+	forward := true
+	for _, r := range s {
+		m[i] = append(m[i], r)
+		if forward {
+			i++
+			if i == numRows {
+				i -= 2
+				forward = false
+			}
+		} else {
+			i--
+			if i == -1 {
+				i += 2
+				forward = true
+			}
+		}
+	}
+
+	var ss string
+	for _, row := range m {
+		ss += string(row)
+	}
+	return ss
 }

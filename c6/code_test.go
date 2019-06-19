@@ -13,6 +13,16 @@ func TestConvert(t *testing.T) {
 			row:    3,
 			line:   "PAHNAPLSIIGYIR",
 		},
+		{
+			zigzag: "PAYPALISHIRING",
+			row:    4,
+			line:   "PINALSIGYAHRPI",
+		},
+		{
+			zigzag: "",
+			row:    4,
+			line:   "",
+		},
 	}
 	for i, tt := range tests {
 		if got, want := convert(tt.zigzag, tt.row), tt.line; got != want {

@@ -20,33 +20,36 @@ func binSearch(nums []int, left, right, x int) []int {
 	return []int{-1, -1}
 }
 
-func leftRangeIndex(nums []int, left, right, x int) int {
-	l, r := left, right
-	for l < r {
+func leftRangeIndex(nums []int, l, r, x int) int {
+	for l <= r {
 		if nums[l] == x {
-			return left
+			return l
 		}
 		i := (l + r) / 2
 		if nums[i] < x {
 			l = i + 1
-		} else {
+		} else if nums[i] == x {
 			r = i
+		} else {
+			return -1
 		}
 	}
-	return right
+	return -1
 }
 
-func rightRangeIndex(nums []int, left, right, x int) int {
-	for left <= right {
-		if nums[right] == x {
-			return right
+func rightRangeIndex(nums []int, l, r, x int) int {
+	for l <= r {
+		if nums[r] == x {
+			return r
 		}
-		i := (left + right) / 2
+		i := (l + r + 1) / 2
 		if nums[i] == x {
-			left = i + 1
+			l = i
+		} else if nums[i] > x {
+			r = i - 1
 		} else {
-			right = i - 1
+			return -1
 		}
 	}
-	return left
+	return -1
 }

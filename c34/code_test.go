@@ -41,6 +41,27 @@ func TestLeftRangeIndex(t *testing.T) {
 		output int
 	}{
 		{
+			nums:   []int{2, 3},
+			left:   0,
+			right:  1,
+			target: 3,
+			output: 1,
+		},
+		{
+			nums:   []int{5, 7, 7, 9, 9, 10},
+			left:   2,
+			right:  4,
+			target: 8,
+			output: -1,
+		},
+		{
+			nums:   []int{5, 7, 7, 7, 8, 10},
+			left:   2,
+			right:  4,
+			target: 8,
+			output: 4,
+		},
+		{
 			nums:   []int{5, 7, 7, 8, 8, 10},
 			left:   2,
 			right:  4,
@@ -87,6 +108,20 @@ func TestRightRangeIndex(t *testing.T) {
 		target int
 		output int
 	}{
+		{
+			nums:   []int{2},
+			left:   0,
+			right:  0,
+			target: 1,
+			output: -1,
+		},
+		{
+			nums:   []int{2, 3},
+			left:   0,
+			right:  1,
+			target: 2,
+			output: 0,
+		},
 		{
 			nums:   []int{5, 7, 7, 8, 8, 10},
 			left:   3,

@@ -27,6 +27,7 @@ func TestReverse(t *testing.T) {
 	tests := []struct {
 		x, y int
 	}{
+		{900000, 9},
 		{0, 0},
 		{1, 1},
 		{-1, -1},

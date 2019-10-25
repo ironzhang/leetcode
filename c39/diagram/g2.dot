@@ -1,0 +1,62 @@
+digraph G {
+	node[shape=box, width=0.4]
+
+	n7[label="7"]
+
+	// n7
+	n7->n7_5[label="-2"]
+	n7->n7_4[label="-3"]
+	n7->n7_1[label="-6"]
+	n7->n7_0[label="-7"]
+	n7_5[label="5"]
+	n7_4[label="4"]
+	n7_1[label="1"]
+	n7_0[label="0",style=filled,color="lightblue"]
+
+	// n7_5
+	n7_5->n7_5_3[label="-2"]
+	n7_5->n7_5_2[label="-3"]
+	n7_5->n7_5_n1[label="-6"]
+	n7_5_3[label="3"]
+	n7_5_2[label="2"]
+	n7_5_n1[label="-1",style=filled,color="orangered"]
+
+	// n7_4
+	n7_4->n7_4_2[label="-2"]
+	n7_4->n7_4_1[label="-3"]
+	n7_4->n7_4_n2[label="-6"]
+	n7_4_2[label="2"]
+	n7_4_1[label="1"]
+	n7_4_n2[label="-2",style=filled,color="orangered"]
+
+	// n7_1
+	n7_1->n7_1_n1[label="-2"]
+	n7_1_n1[label="-1",style=filled,color="orangered"]
+
+	// n7_5_3
+	n7_5_3->n7_5_3_1[label="-2"]
+	n7_5_3->n7_5_3_0[label="-3"]
+	n7_5_3->n7_5_3_n3[label="-6"]
+	n7_5_3_1[label="1"]
+	n7_5_3_0[label="0",style=filled,color="lightblue"]
+	n7_5_3_n3[label="-3",style=filled,color="orangered"]
+
+	// n7_5_2
+	n7_5_2->n7_5_2_0[label="-2"]
+	n7_5_2->n7_5_2_n1[label="-3"]
+	n7_5_2_0[label="0",style=filled,color="lightblue"]
+	n7_5_2_n1[label="-1",style=filled,color="orangered"]
+
+	// n7_4_2
+	n7_4_2->n7_4_2_0[label="-2"]
+	n7_4_2->n7_4_2_n1[label="-3"]
+	n7_4_2_0[label="0",style=filled,color="lightblue"]
+	n7_4_2_n1[label="-1",style=filled,color="orangered"]
+
+	// n7_4_1
+	n7_4_1->n7_4_1_n1[label="-2"]
+	n7_4_1_n1[label="-1",style=filled,color="orangered"]
+
+	n7_5_3_1->n7_5_3_1_n1[label="-2"]
+	n7_5_3_1_n1[label="-1",style=filled,color="orangered"]
+}

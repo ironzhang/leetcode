@@ -102,6 +102,8 @@ func bfs1(candidates []int, target int) (ans [][]int) {
 			} else if x > 0 {
 				nn := Node{target: x, candidates: Append(n.candidates, c)}
 				q.Push(nn)
+			} else {
+				break
 			}
 		}
 	}

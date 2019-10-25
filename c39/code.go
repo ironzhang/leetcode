@@ -11,6 +11,13 @@ type Node struct {
 	candidates []int
 }
 
+func (n *Node) LastCandidate() int {
+	if x := len(n.candidates); x > 0 {
+		return n.candidates[x-1]
+	}
+	return 0
+}
+
 type Queue struct {
 	list list.List
 }
@@ -51,6 +58,10 @@ func Append(src []int, x int) []int {
 }
 
 func combinationSum(candidates []int, target int) [][]int {
+	return bfs1(candidates, target)
+}
+
+func bfs0(candidates []int, target int) [][]int {
 	ans := Answer{m: make(map[string]struct{})}
 	var q Queue
 	q.Push(Node{target: target})
@@ -70,4 +81,29 @@ func combinationSum(candidates []int, target int) [][]int {
 		}
 	}
 	return ans.a
+}
+
+func bfs1(candidates []int, target int) (ans [][]int) {
+	sort.Ints(candidates)
+	var q Queue
+	q.Push(Node{target: target})
+	for {
+		n, ok := q.Pop()
+		if !ok {
+			break
+		}
+		for _, c := range candidates {
+			if n.LastCandidate() > c {
+				continue
+			}
+			x := n.target - c
+			if x == 0 {
+				ans = append(ans, Append(n.candidates, c))
+			} else if x > 0 {
+				nn := Node{target: x, candidates: Append(n.candidates, c)}
+				q.Push(nn)
+			}
+		}
+	}
+	return ans
 }

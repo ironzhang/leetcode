@@ -6,11 +6,11 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 	i, j := 0, 0
 	for {
 		if i >= m {
-			results = append(results, nums2[j:]...)
+			results = append(results, nums2[j:n]...)
 			break
 		}
 		if j >= n {
-			results = append(results, nums1[i:]...)
+			results = append(results, nums1[i:m]...)
 			break
 		}
 
